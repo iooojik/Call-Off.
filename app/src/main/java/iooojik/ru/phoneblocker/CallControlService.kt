@@ -34,22 +34,4 @@ class CallControlService : InCallService() {
 
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Toast.makeText(this, "fnjsknfds", Toast.LENGTH_LONG).show()
-        mTelephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-        val c = Class.forName(mTelephonyManager.javaClass.name)
-        val m = c.getDeclaredMethod("getITelephony")
-        m.isAccessible = true
-        val telephonyService = m.invoke(mTelephonyManager) as ITelephony
-        val bundle = intent!!.extras
-        val phoneNumber = bundle!!.getString("incoming_number")
-        phoneNumber.toString().replace("[^0-9]", "")
-        Log.e("INCOMING", phoneNumber.toString())
-        if ((phoneNumber != null)) {
-            telephonyService.endCall()
-            Log.d("HANG UP", phoneNumber)
-        }
-
-        return super.onStartCommand(intent, flags, startId)
-    }
 }
