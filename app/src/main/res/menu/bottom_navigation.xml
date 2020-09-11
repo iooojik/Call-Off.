@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:enabled="true"
+        android:icon="@drawable/round_contact_phone_24"
+        android:title="@string/menu_item_call_log"
+        />
+
+    <item
+        android:id="@+id/nav_white_list"
+        android:enabled="true"
+        android:icon="@drawable/round_contacts_24"
+        android:title="@string/menu_item_white_contacts"
+        />
+
+    <item
+        android:id="@+id/nav_settings"
+        android:enabled="true"
+        android:icon="@drawable/round_settings_24"
+        android:title="@string/menu_item_settings"
+        />
+
+</menu>

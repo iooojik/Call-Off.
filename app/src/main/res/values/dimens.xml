@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="widgets_margin">20dp</dimen>
+    <dimen name="elements_margin">10dp</dimen>
+    <dimen name="custom_buttons_margin">5dp</dimen>
+    <dimen name="bottom_sheet_divider_margin">150dp</dimen>
+    <dimen name="small_components_dimen">6dp</dimen>
+    <dimen name="medium_components_dimen">10dp</dimen>
+    <dimen name="large_components_dimen">24dp</dimen>
+</resources>

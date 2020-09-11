@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FEDBD0</color>
+    <color name="colorPrimaryDark">#442C2E</color>
+    <color name="colorSecondary">#FEEAE6</color>
+    <color name="colorAccent">#FEDBD0</color>
+    <color name="colorText">#442C2E</color>
+    <color name="iconsColor">#442C2E</color>
+    <color name="colorWarning">#D32F2F</color>
+    <color name="colorCancel">#757575</color>
+    <color name="bottom_sheet_divider_color">#E3E1E1</color>
+    <color name="chainItem">#FDEEE8</color>
+    <color name="colorWhite">#FFF</color>
+    <color name="colorAcceptable">#C1F883</color>
+</resources>
