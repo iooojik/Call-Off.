@@ -1,17 +1,17 @@
-package iooojik.ru.phoneblocker.ui
+package iooojik.ru.phoneblocker.ui.home
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Color
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
@@ -19,9 +19,12 @@ import com.google.android.material.shape.ShapeAppearanceModel
 import iooojik.ru.phoneblocker.R
 import iooojik.ru.phoneblocker.localData.callLog.CallLogModel
 
-class CallLogAdapter(private val context: Context, private val inflater : LayoutInflater,
-                     private var callLogs : MutableList<CallLogModel>,
-                     private val activity: Activity)
+
+class CallLogAdapter(
+    private val context: Context, private val inflater: LayoutInflater,
+    private var callLogs: MutableList<CallLogModel>,
+    private val activity: Activity
+)
     : RecyclerView.Adapter<CallLogAdapter.ViewHolder>()  {
 
 
@@ -45,17 +48,29 @@ class CallLogAdapter(private val context: Context, private val inflater : Layout
         customButtonShapeBuilder.setAllCorners(CornerFamily.CUT, cornerSize)
         val materialShapeDrawable = MaterialShapeDrawable(customButtonShapeBuilder.build())
         if (model.isMyContact!!)
-            materialShapeDrawable.fillColor = ContextCompat.getColorStateList(context, R.color.colorAcceptable)
+            materialShapeDrawable.fillColor = ContextCompat.getColorStateList(
+                context,
+                R.color.colorAcceptable
+            )
         else
-            materialShapeDrawable.fillColor = ContextCompat.getColorStateList(context, R.color.chainItem)
+            materialShapeDrawable.fillColor = ContextCompat.getColorStateList(
+                context,
+                R.color.chainItem
+            )
+
+        holder.callButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_CALL, Uri.parse("tel:" + model.phoneNumber))
+            activity.startActivity(intent)
+        }
 
         holder.itemView.background = materialShapeDrawable
 
     }
 
-    class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val contactName : TextView = itemView.findViewById(R.id.contact_name)
         val contactPhoneNumber: TextView = itemView.findViewById(R.id.contact_phone_number)
         val callDate : TextView = itemView.findViewById(R.id.call_time)
+        val callButton : ImageView = itemView.findViewById(R.id.call_button)
     }
 }

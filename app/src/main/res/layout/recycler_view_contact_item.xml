@@ -1,52 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="@dimen/small_components_dimen"
-    android:layout_height="wrap_content">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_weight="1"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/contact_name"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_margin="@dimen/small_components_dimen"
             android:fontFamily="@font/rubik_medium"
             android:textSize="24sp"
             android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/contact_phone_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/small_components_dimen"
+            android:fontFamily="@font/rubik"
+            android:text="contact_phone_number"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/call_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/small_components_dimen"
+            android:fontFamily="@font/rubik"
+            android:text="call_time"
+            android:textSize="14sp" />
+
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/contact_phone_number"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/small_components_dimen"
-        android:fontFamily="@font/rubik"
-        android:text="contact_phone_number"
-        android:textSize="14sp" />
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/medium_components_dimen"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/call_time"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/small_components_dimen"
-        android:fontFamily="@font/rubik"
-        android:text="call_time"
-        android:textSize="14sp" />
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginStart="@dimen/widgets_margin"
-        android:layout_marginEnd="@dimen/widgets_margin"
-        android:background="?android:attr/listDivider" />
+        <ImageView
+            android:id="@+id/call_button"
+            android:background="@drawable/round_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/round_call_24" />
+    </LinearLayout>
 
 </LinearLayout>

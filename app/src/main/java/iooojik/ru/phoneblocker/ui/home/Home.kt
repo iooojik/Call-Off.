@@ -1,5 +1,6 @@
 package iooojik.ru.phoneblocker.ui.home
 
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.pm.PackageManager
 import android.database.Cursor
@@ -20,7 +21,6 @@ import iooojik.ru.phoneblocker.R
 import iooojik.ru.phoneblocker.StaticVars
 import iooojik.ru.phoneblocker.localData.callLog.CallLogModel
 import iooojik.ru.phoneblocker.localData.whiteList.WhiteListModel
-import iooojik.ru.phoneblocker.ui.CallLogAdapter
 import java.lang.Exception
 import java.lang.Long
 import java.util.*
@@ -89,15 +89,16 @@ class Home : Fragment() {
 
     }
 
+    @SuppressLint("MissingPermission")
     private fun getCallLogs() : MutableList<CallLogModel>{
         // получение списка вызовов
         val models : MutableList<CallLogModel> = mutableListOf()
         val calllogsBuffer = ArrayList<String>()
         calllogsBuffer.clear()
-        val managedCursor: Cursor = requireActivity().managedQuery(
+        val managedCursor: Cursor = requireActivity().contentResolver.query(
             CallLog.Calls.CONTENT_URI,
             null, null, null, null
-        )
+        )!!
         val number: Int = managedCursor.getColumnIndex(CallLog.Calls.NUMBER)
         val type: Int = managedCursor.getColumnIndex(CallLog.Calls.TYPE)
         val date: Int = managedCursor.getColumnIndex(CallLog.Calls.DATE)
@@ -127,7 +128,7 @@ class Home : Fragment() {
                 """
             )
             val model = CallLogModel(null, getString(R.string.unknown_caller),
-                phNumber.toString(), false, callDate.toString(), dir.toString())
+                phNumber.toString(), false, callDayTime.toString(), dir.toString())
 
             for (md in myContacts){
                 if (phNumber == md.phoneNumber){
