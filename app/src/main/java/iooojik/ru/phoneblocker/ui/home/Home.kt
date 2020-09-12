@@ -1,6 +1,7 @@
 package iooojik.ru.phoneblocker.ui.home
 
 import android.content.ContentResolver
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.os.Bundle
 import android.provider.CallLog
@@ -10,13 +11,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import iooojik.ru.phoneblocker.R
+import iooojik.ru.phoneblocker.StaticVars
 import iooojik.ru.phoneblocker.localData.callLog.CallLogModel
 import iooojik.ru.phoneblocker.localData.whiteList.WhiteListModel
 import iooojik.ru.phoneblocker.ui.CallLogAdapter
+import java.lang.Exception
 import java.lang.Long
 import java.util.*
 import kotlin.collections.ArrayList
@@ -41,11 +46,36 @@ class Home : Fragment() {
     override fun onStart() {
         super.onStart()
         Thread {
-            initialize()
+            try {
+                initialize()
+            } catch (e : Exception){
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), StaticVars().TOAST_WARNING_MESSAGE, Toast.LENGTH_SHORT).show()
+                }
+            }
         }.start()
     }
 
+    private fun checkPermissions(){
+        //проверяем наличие разрешений
+        var permissionStatus = PackageManager.PERMISSION_GRANTED
+        val perms = StaticVars().perms
+
+        for (perm in perms) {
+            if (ContextCompat.checkSelfPermission(requireContext(), perm) ==
+                PackageManager.PERMISSION_DENIED) {
+                permissionStatus = PackageManager.PERMISSION_DENIED
+                break
+            }
+        }
+
+        //ещё раз проверяем наличие разрешений
+        if (permissionStatus != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(requireActivity(), perms, 1)
+    }
+
     private fun initialize(){
+        checkPermissions()
         inflater = requireActivity().layoutInflater
         myContacts = getContactList()
         callLogs = getCallLogs()
@@ -58,7 +88,6 @@ class Home : Fragment() {
         }
 
     }
-
 
     private fun getCallLogs() : MutableList<CallLogModel>{
         // получение списка вызовов

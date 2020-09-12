@@ -9,14 +9,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Switch
 import androidx.appcompat.widget.SwitchCompat
-import androidx.core.content.ContextCompat.getSystemService
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import iooojik.ru.phoneblocker.CallControlService
+import iooojik.ru.phoneblocker.services.CallControlService
 import iooojik.ru.phoneblocker.R
 import iooojik.ru.phoneblocker.StaticVars
-import kotlinx.android.synthetic.main.fragment_settings.*
 
 class Settings : Fragment() {
     private lateinit var rootView: View
