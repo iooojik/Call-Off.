@@ -56,14 +56,18 @@ class Settings : Fragment() {
             val intent = Intent(requireContext(), callControlService)
 
             if (isChecked) {
-                preferences.edit().putInt(StaticVars().callsController, 1).apply()
                 requireActivity().startService(intent)
+                preferences.edit().putInt(StaticVars().callsController, 1).apply()
+                Snackbar.make(requireView(), "Включено", Snackbar.LENGTH_SHORT).show()
+
             }
             else {
-                preferences.edit().putInt(StaticVars().callsController, 0).apply()
                 if (isServiceRunning(callControlService)){
                     requireActivity().stopService(intent)
                 }
+                preferences.edit().putInt(StaticVars().callsController, 0).apply()
+                Snackbar.make(requireView(), "Выключено", Snackbar.LENGTH_SHORT).show()
+
             }
         }
 
@@ -79,13 +83,15 @@ class Settings : Fragment() {
                     model.isMyContact = true
                     whiteListDao.insert(model)
                 }
+                Snackbar.make(requireView(), "Добавлено", Snackbar.LENGTH_SHORT).show()
+
             } else {
                 preferences.edit().putInt(StaticVars().myContactsInWhiteList, 0).apply()
                 val whiteList = whiteListDao.getMyContacts(true)
                 for (model in whiteList)
                     whiteListDao.delete(model)
 
-                Snackbar.make(rootView, "Удалено", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(requireView(), "Удалено", Snackbar.LENGTH_SHORT).show()
 
             }
         }
@@ -149,7 +155,6 @@ class Settings : Fragment() {
             }
         }
         cur?.close()
-        Log.e("skjdskfkjsdfds", models.size.toString())
         return models
     }
 

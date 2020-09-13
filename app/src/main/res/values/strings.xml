@@ -10,6 +10,6 @@
     <string name="name">Имя</string>
     <string name="phoneNumber">Номер телефона</string>
     <string name="addButton">Добавить</string>
-    <string name="turnOnCallsControl">Включиьт контроль вызовов</string>
+    <string name="turnOnCallsControl">Включить контроль вызовов</string>
     <string name="addMyContactsToWhiteList">Добавить мои контакты в белый список</string>
 </resources>

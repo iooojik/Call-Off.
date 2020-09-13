@@ -9,5 +9,7 @@
         <item name="android:fontFamily">@font/rubik_medium</item>
     </style>
 
-
+    <style name="Widget.MaterialComponents.Snackbar" parent="">
+        <item name="android:layout_marginBottom">@dimen/bottom_navigation</item>
+    </style>
 </resources>
