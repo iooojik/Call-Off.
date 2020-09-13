@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="iooojik.ru.phoneblocker">
+    package="iooojik.ru.calloff">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -20,7 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="iooojik.ru.calloff.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -42,7 +42,7 @@
             android:resource="@array/preloaded_fonts" />
 
         <receiver
-            android:name=".receivers.PhoneCallStateReceiver"
+            android:name="iooojik.ru.calloff.receivers.PhoneCallStateReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -51,7 +51,7 @@
         </receiver>
 
         <receiver
-            android:name=".receivers.BootReceiver"
+            android:name="iooojik.ru.calloff.receivers.BootReceiver"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
             android:enabled="true">
             <intent-filter>
@@ -62,12 +62,12 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".receivers.NotificationReceiver"
+        <receiver android:name="iooojik.ru.calloff.receivers.NotificationReceiver"
             android:enabled="true"
             android:configChanges="keyboardHidden|orientation|screenSize"/>
 
         <service
-            android:name=".services.CallControlService"
+            android:name="iooojik.ru.calloff.services.CallControlService"
             android:enabled="true"
             android:exported="true">
         </service>
