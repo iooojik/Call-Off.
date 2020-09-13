@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initialization(){
+        requestPermissions()
         /*
         //запрос на использование данного приложения в качестве дефолтного для управления вызовами
         if (getSystemService(TelecomManager::class.java).defaultDialerPackage != packageName) {

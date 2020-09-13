@@ -48,6 +48,7 @@ class Home : Fragment() {
         Thread {
             try {
                 initialize()
+                //checkPermissions()
             } catch (e : Exception){
                 requireActivity().runOnUiThread {
                     Log.e("error", e.toString())
@@ -73,10 +74,10 @@ class Home : Fragment() {
         //ещё раз проверяем наличие разрешений
         if (permissionStatus != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(requireActivity(), perms, 1)
+        else initialize()
     }
 
     private fun initialize(){
-        checkPermissions()
         inflater = requireActivity().layoutInflater
         myContacts = getContactList()
         callLogs = getCallLogs()
