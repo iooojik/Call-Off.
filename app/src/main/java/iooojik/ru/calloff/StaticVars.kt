@@ -6,6 +6,7 @@ class StaticVars {
     val preferencesName = "MAIN PREFERENCES"
     val callsController = "CALLS CONTROLLER"
     val myContactsInWhiteList = "MY CONTACTS IN WHITE LIST STATE"
+    val policyChecked = "USER CHECKED POLICY"
     val NOTIFICATION_NAME = "Напоминание"
     val NOTIFICATION_ID = 102
 

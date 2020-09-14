@@ -20,4 +20,9 @@
         android:name="iooojik.ru.calloff.ui.whiteList.WhiteList"
         android:label="fragment_white_list"
         tools:layout="@layout/fragment_white_list" />
+    <fragment
+        android:id="@+id/nav_policy"
+        android:name="iooojik.ru.calloff.ui.policy.Policy"
+        android:label="fragment_policy"
+        tools:layout="@layout/fragment_policy" />
 </navigation>

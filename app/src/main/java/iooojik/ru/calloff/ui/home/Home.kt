@@ -1,9 +1,15 @@
 package iooojik.ru.calloff.ui.home
 
 import android.annotation.SuppressLint
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.ContentResolver
+import android.content.Context
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.provider.CallLog
 import android.provider.ContactsContract
@@ -12,15 +18,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import iooojik.ru.calloff.R
 import iooojik.ru.calloff.StaticVars
+import iooojik.ru.calloff.localData.AppDatabase
+import iooojik.ru.calloff.localData.callLog.CallLogDao
 import iooojik.ru.calloff.localData.callLog.CallLogModel
 import iooojik.ru.calloff.localData.whiteList.WhiteListModel
+import kotlinx.android.synthetic.main.fragment_home.*
 import java.lang.Exception
 import java.lang.Long
 import java.util.*
@@ -32,6 +45,8 @@ class Home : Fragment() {
     private lateinit var callLogs : MutableList<CallLogModel>
     private lateinit var inflater: LayoutInflater
     private lateinit var myContacts : MutableList<WhiteListModel>
+    private lateinit var callLogDao: CallLogDao
+    private lateinit var database : AppDatabase
 
 
     override fun onCreateView(
@@ -45,10 +60,12 @@ class Home : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        requireActivity().findViewById<FloatingActionButton>(R.id.fab).hide()
+        database = AppDatabase.getAppDataBase(requireContext())!!
+        callLogDao = database.callLogDao()
         Thread {
             try {
                 initialize()
-                //checkPermissions()
             } catch (e : Exception){
                 requireActivity().runOnUiThread {
                     Log.e("error", e.toString())
@@ -58,37 +75,28 @@ class Home : Fragment() {
         }.start()
     }
 
-    private fun checkPermissions(){
-        //проверяем наличие разрешений
-        var permissionStatus = PackageManager.PERMISSION_GRANTED
-        val perms = StaticVars().perms
-
-        for (perm in perms) {
-            if (ContextCompat.checkSelfPermission(requireContext(), perm) ==
-                PackageManager.PERMISSION_DENIED) {
-                permissionStatus = PackageManager.PERMISSION_DENIED
-                break
-            }
-        }
-
-        //ещё раз проверяем наличие разрешений
-        if (permissionStatus != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(requireActivity(), perms, 1)
-        else initialize()
-    }
-
     private fun initialize(){
         inflater = requireActivity().layoutInflater
         myContacts = getContactList()
         callLogs = getCallLogs()
         callLogs.reverse()
 
+
         requireActivity().runOnUiThread {
+
+            val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+            if (bottomNavigationView.visibility == View.GONE)
+                bottomNavigationView.visibility = View.VISIBLE
+
             val recView = rootView.findViewById<RecyclerView>(R.id.rec_view_call_log)
             recView.layoutManager = LinearLayoutManager(context)
             recView.adapter = CallLogAdapter(requireContext(), inflater, callLogs, requireActivity())
         }
 
+        //если версия SDK > O , то создаём канал для получения уведомлений
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel(StaticVars().NOTIFICATION_NAME.toString(), StaticVars().NOTIFICATION_NAME);
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -130,10 +138,13 @@ class Home : Fragment() {
                 """
             )
             val model = CallLogModel(null, getString(R.string.unknown_caller),
-                phNumber.toString(), false, callDayTime.toString(), dir.toString())
+                phNumber.toString(),null.toString(),false, callDayTime.toString(), dir.toString())
 
             for (md in myContacts){
                 if (phNumber == md.firstPhoneNumber || phNumber == md.secondPhoneNumber){
+                    model.firstPhoneNumber = md.firstPhoneNumber
+                    if (md.secondPhoneNumber != "null" && md.secondPhoneNumber != md.firstPhoneNumber)
+                        model.secondPhoneNumber = md.secondPhoneNumber
                     model.name = md.name
                     model.isMyContact = true
                     break
@@ -142,8 +153,29 @@ class Home : Fragment() {
 
             models.add(model)
         }
+        if (models.size != callLogDao.getAll().size){
+            callLogDao.deleteAll()
+            for (md in models)
+                callLogDao.insert(md)
+        }
         managedCursor.close()
+        requireActivity().runOnUiThread {
+            progressBar.visibility = View.GONE
+        }
         return models
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel(channelId: String, channelName: String): String? {
+        val chan = NotificationChannel(
+            channelId,
+            channelName, NotificationManager.IMPORTANCE_NONE
+        )
+        chan.lightColor = Color.BLUE
+        chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        val manager = requireActivity().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.createNotificationChannel(chan)
+        return channelId
     }
 
     private fun getContactList() : MutableList<WhiteListModel> {

@@ -145,7 +145,7 @@ class Settings : Fragment() {
 
                         if (index == 1 && phoneNo.toCharArray()[0] == '+')
                             model.firstPhoneNumber = phoneNo
-                        else if(index == 2 && phoneNo.toCharArray()[0] == '+')
+                        else if(phoneNo.toCharArray()[0] == '+' && model.firstPhoneNumber != phoneNo)
                             model.secondPhoneNumber = phoneNo
                         index++
                     }

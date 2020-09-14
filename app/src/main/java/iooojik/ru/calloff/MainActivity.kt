@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initialization(){
-        requestPermissions()
+        //requestPermissions()
         /*
         //запрос на использование данного приложения в качестве дефолтного для управления вызовами
         if (getSystemService(TelecomManager::class.java).defaultDialerPackage != packageName) {
@@ -92,7 +93,13 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.background = materialShapeDrawable
 
         //переходим на начальную страницу
-        findNavController(R.id.nav_host_fragment).navigate(R.id.nav_home)
+        if (preferences.getInt(StaticVars().policyChecked, 0) == 1)
+            findNavController(R.id.nav_host_fragment).navigate(R.id.nav_home)
+        else {
+            findViewById<FloatingActionButton>(R.id.fab).hide()
+            bottomNavigationView.visibility = View.GONE
+            findNavController(R.id.nav_host_fragment).navigate(R.id.nav_policy)
+        }
 
     }
 }

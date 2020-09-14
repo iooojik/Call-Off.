@@ -1,5 +1,6 @@
 package iooojik.ru.calloff.ui.whiteList
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -39,6 +40,7 @@ class WhiteListAdapter(private val context: Context, private val inflater: Layou
         return whiteList.size
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val database : AppDatabase = AppDatabase.getAppDataBase(context)!!
         val whiteListDao : WhiteListDao = database.whiteListDao()
@@ -47,6 +49,9 @@ class WhiteListAdapter(private val context: Context, private val inflater: Layou
         holder.contactName.text = model.name.toString()
         holder.contactPhoneNumber.text = model.firstPhoneNumber.toString()
         holder.callDate.visibility = View.GONE
+
+        if (model.secondPhoneNumber != "null")
+            holder.contactPhoneNumber.text = "${model.firstPhoneNumber}\n${model.secondPhoneNumber}"
 
         val cornerSize = activity.resources.getDimension(R.dimen.medium_components_dimen)
         val customButtonShapeBuilder = ShapeAppearanceModel.Builder()

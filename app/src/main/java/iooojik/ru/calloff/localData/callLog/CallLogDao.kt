@@ -22,4 +22,13 @@ interface CallLogDao {
     @Query("SELECT * FROM calllogmodel ORDER BY _id DESC LIMIT 1")
     fun getLastTask() : CallLogModel
 
+    @Query("DELETE FROM calllogmodel")
+    fun deleteAll()
+
+    @Query("SELECT * FROM calllogmodel WHERE first_phone_number = :firstPhoneNumber")
+    fun findByFirstPhoneNum(firstPhoneNumber : String) : List<CallLogModel>
+
+    @Query("SELECT * FROM calllogmodel WHERE first_phone_number = :secondPhoneNumber")
+    fun findBySecondPhoneNum(secondPhoneNumber : String) : List<CallLogModel>
+
 }

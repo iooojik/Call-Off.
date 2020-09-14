@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.policy.Policy">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/fab_margin"
+            android:layout_marginTop="@dimen/fab_margin"
+            android:layout_marginEnd="@dimen/fab_margin"
+            android:layout_marginBottom="@dimen/small_components_dimen"
+            android:fontFamily="@font/rubik_medium"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:text="Политика конфиденциальности и условия исопользования"/>
+
+        <TextView
+            android:id="@+id/policy_text"
+            android:layout_margin="@dimen/fab_margin"
+            android:fontFamily="@font/rubik_medium"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/cancel_policy"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorWarning"
+                android:layout_margin="@dimen/fab_margin"
+                android:layout_weight="1"
+                android:text="Отклонить" />
+
+            <Button
+                android:id="@+id/accept_policy"
+                style="@style/Widget.MaterialComponents.Button"
+                android:backgroundTint="@color/colorAcceptable"
+                android:textColor="@color/colorText"
+                android:layout_margin="@dimen/fab_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Принять" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</androidx.core.widget.NestedScrollView>

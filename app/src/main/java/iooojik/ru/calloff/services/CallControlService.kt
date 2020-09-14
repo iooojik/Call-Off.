@@ -1,6 +1,5 @@
 package iooojik.ru.calloff.services
 
-import android.R
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -15,6 +14,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import iooojik.ru.calloff.MainActivity
+import iooojik.ru.calloff.R
 import iooojik.ru.calloff.StaticVars
 
 
@@ -31,7 +31,7 @@ class CallControlService : InCallService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         //показываем уведомление о работе приложения в фоновом процессе
-        sendNotification("Запущен фоновый процесс", "Номера из чёрного списка заблокированы")
+        sendNotification("Запущен фоновый процесс", "Номера из \"Белого списка\" могут вам звонить.")
         //какой-то процесс
         doTask()
         return START_REDELIVER_INTENT
@@ -74,7 +74,7 @@ class CallControlService : InCallService() {
 
         val builder = NotificationCompat
             .Builder(this, StaticVars().NOTIFICATION_NAME)
-            .setSmallIcon(R.mipmap.sym_def_app_icon)//иконка
+            .setSmallIcon(R.mipmap.ic_launcher_round)
             .setContentIntent(contentIntent)//что открываем при нажатии на уведомление
             .setOngoing(true)//убираем возможность удаления уведомления
             .setContentTitle(title) // название
