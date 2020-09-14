@@ -11,15 +11,26 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        android:fontFamily="@font/rubik_medium"
-        android:text="@string/menu_item_white_contacts"
-        android:textSize="28sp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:fontFamily="@font/rubik_medium"
+            android:text="@string/menu_item_white_contacts"
+            android:textSize="28sp" />
 
-    <androidx.recyclerview.widget.RecyclerView
+        <TextView
+            android:id="@+id/textWarning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/fab_margin"
+            android:fontFamily="@font/rubik_medium"
+            android:text="@string/youdidntadd"
+            android:textAlignment="center"
+            android:textSize="28sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rec_view_white_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

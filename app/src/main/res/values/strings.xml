@@ -12,6 +12,8 @@
     <string name="addButton">Добавить</string>
     <string name="turnOnCallsControl">Включить контроль вызовов</string>
     <string name="addMyContactsToWhiteList">Добавить мои контакты в белый список</string>
+    <string name="youdidntadd">Вы пока никого не добавили 😇</string>
+
     <string name="policy_html">
         **Privacy Policy**
 

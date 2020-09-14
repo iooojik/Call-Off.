@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,7 @@ import iooojik.ru.calloff.R
 import iooojik.ru.calloff.localData.AppDatabase
 import iooojik.ru.calloff.localData.whiteList.WhiteListDao
 import iooojik.ru.calloff.localData.whiteList.WhiteListModel
+import kotlinx.android.synthetic.main.fragment_white_list.*
 
 
 class WhiteList : Fragment(), View.OnClickListener {
@@ -48,10 +50,19 @@ class WhiteList : Fragment(), View.OnClickListener {
 
     private fun loadInformation() {
         whiteList = whiteListDao.getAll() as MutableList
-        val recView = rootView.findViewById<RecyclerView>(R.id.rec_view_white_list)
-        recView.layoutManager = LinearLayoutManager(context)
-        adapter = WhiteListAdapter(requireContext(), requireActivity().layoutInflater, whiteList, requireActivity())
-        recView.adapter = adapter
+        val warningText = rootView.findViewById<TextView>(R.id.textWarning)
+        if (whiteList.size > 0) {
+            warningText.visibility = View.GONE
+            val recView = rootView.findViewById<RecyclerView>(R.id.rec_view_white_list)
+            recView.layoutManager = LinearLayoutManager(context)
+            adapter = WhiteListAdapter(
+                requireContext(),
+                requireActivity().layoutInflater,
+                whiteList,
+                requireActivity()
+            )
+            recView.adapter = adapter
+        }
     }
 
     override fun onClick(v: View?) {
@@ -70,6 +81,8 @@ class WhiteList : Fragment(), View.OnClickListener {
                         whiteListDao.insert(model)
                         whiteList.add(model)
                         adapter.notifyDataSetChanged()
+                        val warningText = rootView.findViewById<TextView>(R.id.textWarning)
+                        warningText.visibility = View.GONE
                         Toast.makeText(requireContext(), "Добавлено", Toast.LENGTH_SHORT).show()
                         bottomSheetDialog.hide()
                     } else {
