@@ -29,10 +29,10 @@ class PhoneCallStateReceiver : BroadcastReceiver() {
             database = AppDatabase.getAppDataBase(context)!!
             whiteListDao = database.whiteListDao()
             val whiteList = whiteListDao.getAll()
-            var isReject = false
+            var isReject = true
             for (model in whiteList){
                 if (model.firstPhoneNumber == phoneNumber || model.secondPhoneNumber == phoneNumber) {
-                    isReject = true
+                    isReject = false
                     break
                 }
             }

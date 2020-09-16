@@ -17,6 +17,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
@@ -55,11 +56,6 @@ class Home : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         rootView = inflater.inflate(R.layout.fragment_home, container, false)
-        return rootView
-    }
-
-    override fun onStart() {
-        super.onStart()
         requireActivity().findViewById<FloatingActionButton>(R.id.fab).hide()
         database = AppDatabase.getAppDataBase(requireContext())!!
         callLogDao = database.callLogDao()
@@ -73,6 +69,7 @@ class Home : Fragment() {
                 }
             }
         }.start()
+        return rootView
     }
 
     private fun initialize(){
@@ -160,7 +157,9 @@ class Home : Fragment() {
         }
         managedCursor.close()
         requireActivity().runOnUiThread {
-            progressBar.visibility = View.GONE
+            val pgBar = rootView.findViewById<ProgressBar>(R.id.progressBar)
+            if (pgBar != null)
+                pgBar.visibility = View.GONE
         }
         return models
     }
