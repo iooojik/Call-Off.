@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
@@ -22,13 +23,16 @@ class Policy : Fragment(), View.OnClickListener {
 
     private lateinit var rootView : View
     private lateinit var preferences: SharedPreferences
+    private var fromSettings = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         rootView = inflater.inflate(R.layout.fragment_policy, container, false)
+        //получаем настройки
         preferences = requireActivity().getSharedPreferences(StaticVars().preferencesName, Context.MODE_PRIVATE)
+        //инициализируем элементы на фрагементе
         initialize()
         return rootView
     }
@@ -40,13 +44,23 @@ class Policy : Fragment(), View.OnClickListener {
         val acceptPolicy = rootView.findViewById<Button>(R.id.accept_policy)
         cancelButton.setOnClickListener(this)
         acceptPolicy.setOnClickListener(this)
+        val args = this.arguments
+        //проверяем, были ли выполнен переход из настроек
+        //если да, то изменяем состояние кнопок
+        if (args != null){
+            fromSettings = args.getBoolean("fromSettings")
+            if (fromSettings){
+                cancelButton.visibility = View.GONE
+            }
+        }
     }
 
     override fun onClick(v: View?) {
         when(v!!.id){
             R.id.cancel_policy -> {
-                Snackbar.make(requireView(), "К сожалению, вы не сможете пользоваться приложением, " +
-                        "пока не примете условия пользовательского соглашения.", Snackbar.LENGTH_LONG).show()
+                preferences.edit().putInt(StaticVars().policyChecked, 0).apply()
+                Toast.makeText(requireContext(), "К сожалению, вы не сможете пользоваться приложением, " +
+                        "пока не примете Условия пользовательского соглашения и Правила использования.", Toast.LENGTH_LONG).show()
             }
             R.id.accept_policy -> {
                 if (!requestPermissions()){
@@ -55,6 +69,9 @@ class Policy : Fragment(), View.OnClickListener {
                     preferences.edit().putInt(StaticVars().policyChecked, 1).apply()
                     requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.nav_home)
                 }
+                val acceptPolicy = rootView.findViewById<Button>(R.id.accept_policy)
+                if (!fromSettings)
+                    acceptPolicy.text = "Пожалуйста, ещё раз нажмите на эту кнопку."
             }
         }
     }

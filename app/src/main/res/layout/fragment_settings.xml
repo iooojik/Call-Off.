@@ -34,6 +34,15 @@
             android:layout_margin="@dimen/fab_margin"
             android:text="@string/addMyContactsToWhiteList" />
 
+        <TextView
+            android:id="@+id/policy_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:text="Политика конфиденциальности и условия использования"
+            android:textAlignment="center"
+            android:textStyle="bold" />
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

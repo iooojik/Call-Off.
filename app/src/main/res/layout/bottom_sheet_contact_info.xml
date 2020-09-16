@@ -34,7 +34,7 @@
         android:layout_marginStart="@dimen/fab_margin"
         android:layout_marginEnd="@dimen/fab_margin"
         android:textSize="11sp"
-        android:text="Нажмиите на телефон, чтобы сделать вызов"
+        android:text="Нажмиите на номер телефона, чтобы сделать вызов"
         tools:ignore="SmallSp" />
 
     <androidx.recyclerview.widget.RecyclerView

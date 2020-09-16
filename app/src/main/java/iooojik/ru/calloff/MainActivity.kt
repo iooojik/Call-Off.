@@ -34,41 +34,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initialization(){
-        //requestPermissions()
-        /*
-        //запрос на использование данного приложения в качестве дефолтного для управления вызовами
-        if (getSystemService(TelecomManager::class.java).defaultDialerPackage != packageName) {
-            Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER)
-                .putExtra(TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME, packageName)
-                .let(::startActivity)
-        }
-         */
         //получаем SharedPreferences
         preferences = this.getSharedPreferences(StaticVars().preferencesName, Context.MODE_PRIVATE)
-        //запрашиваем разрешения
-        //requestPermissions()
         //настраиваем навигацию
         navigationSetup()
-    }
-
-    private fun requestPermissions(){
-        //проверяем наличие разрешений
-
-        val perms = StaticVars().perms
-        var permissionStatus = PackageManager.PERMISSION_GRANTED
-
-        for (perm in perms) {
-            if (ContextCompat.checkSelfPermission(
-                    applicationContext, perm) == PackageManager.PERMISSION_DENIED) {
-                permissionStatus = PackageManager.PERMISSION_DENIED
-                break
-            }
-        }
-
-        //ещё раз проверяем наличие разрешений
-        if (permissionStatus != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(this, perms, 1)
-
     }
 
     private fun navigationSetup(){

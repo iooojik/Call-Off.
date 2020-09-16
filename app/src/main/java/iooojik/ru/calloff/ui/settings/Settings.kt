@@ -13,7 +13,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
+import androidx.navigation.findNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import iooojik.ru.calloff.services.CallControlService
@@ -23,7 +25,7 @@ import iooojik.ru.calloff.localData.AppDatabase
 import iooojik.ru.calloff.localData.whiteList.WhiteListDao
 import iooojik.ru.calloff.localData.whiteList.WhiteListModel
 
-class Settings : Fragment() {
+class Settings : Fragment(), View.OnClickListener {
     private lateinit var rootView: View
     private lateinit var preferences: SharedPreferences
     private lateinit var database: AppDatabase
@@ -43,14 +45,22 @@ class Settings : Fragment() {
     }
 
     private fun initialize(){
+        //получаем текущую базу данных
         database = AppDatabase.getAppDataBase(requireContext())!!
         whiteListDao = database.whiteListDao()
+        //убираем фаб
         requireActivity().findViewById<FloatingActionButton>(R.id.fab).hide()
+        //кнопка с политикой конфиденциальности
+        val policyButton = rootView.findViewById<TextView>(R.id.policy_text)
+        policyButton.setOnClickListener(this)
+        //переключатель, активирующий фильтрацию вызовов
         val callsController = rootView.findViewById<SwitchCompat>(R.id.calls_controller)
+        //настройки приложения
         preferences = requireActivity().getSharedPreferences(StaticVars().preferencesName, Context.MODE_PRIVATE)
+        //если сервис запущен, то вкл переключатель
         if (preferences.getInt(StaticVars().callsController, 0) == 1)
             callsController.isChecked = true
-
+        //слушатель на изменение состояния переключателя
         callsController.setOnCheckedChangeListener{buttonView, isChecked ->
             val callControlService = CallControlService::class.java
             val intent = Intent(requireContext(), callControlService)
@@ -70,13 +80,15 @@ class Settings : Fragment() {
 
             }
         }
-
+        //чекер для добавления моих контактов в белый список
         val addContactsToWhiteList = rootView.findViewById<CheckBox>(R.id.myContactsInWhiteList)
         if (preferences.getInt(StaticVars().myContactsInWhiteList, 0) == 1){
             addContactsToWhiteList.isChecked = true
         }
-        addContactsToWhiteList.setOnCheckedChangeListener { buttonView, isChecked ->
+        //слушатель чекера
+        addContactsToWhiteList.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked){
+                //если активирован, то получаем список контактов и заноисим их в бд
                 preferences.edit().putInt(StaticVars().myContactsInWhiteList, 1).apply()
                 val myContacts = getContactList()
                 for (model in myContacts){
@@ -86,6 +98,7 @@ class Settings : Fragment() {
                 Snackbar.make(requireView(), "Добавлено", Snackbar.LENGTH_SHORT).show()
 
             } else {
+                //иначе удаляем
                 preferences.edit().putInt(StaticVars().myContactsInWhiteList, 0).apply()
                 val whiteList = whiteListDao.getMyContacts(true)
                 for (model in whiteList)
@@ -169,5 +182,15 @@ class Settings : Fragment() {
             }
         }
         return false
+    }
+
+    override fun onClick(v: View?) {
+        when(v!!.id){
+            R.id.policy_text -> {
+                val args : Bundle = Bundle()
+                args.putBoolean("fromSettings", true)
+                requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.nav_policy, args)
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="@dimen/bottom_navigation"
     tools:context=".ui.policy.Policy">
 
     <LinearLayout
@@ -20,7 +21,7 @@
             android:fontFamily="@font/rubik_medium"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:text="Политика конфиденциальности и условия исопользования"/>
+            android:text="@string/policyNameTextView"/>
 
         <TextView
             android:id="@+id/policy_text"
@@ -29,32 +30,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <LinearLayout
+        <Button
+            android:id="@+id/accept_policy"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:backgroundTint="@color/colorAcceptable"
+            android:text="Я согласен с настоящей политикой и готов предоставить доступ приложению к своей личной информации."
+            android:textColor="@color/colorText" />
 
-            <Button
-                android:id="@+id/cancel_policy"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorWarning"
-                android:layout_margin="@dimen/fab_margin"
-                android:layout_weight="1"
-                android:text="Отклонить" />
-
-            <Button
-                android:id="@+id/accept_policy"
-                style="@style/Widget.MaterialComponents.Button"
-                android:backgroundTint="@color/colorAcceptable"
-                android:textColor="@color/colorText"
-                android:layout_margin="@dimen/fab_margin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Принять" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/cancel_policy"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:text="Отклонить"
+            android:textColor="@color/colorWarning" />
 
     </LinearLayout>
 
