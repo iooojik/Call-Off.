@@ -79,6 +79,7 @@ class CallControlService : InCallService() {
             .setOngoing(true)//убираем возможность удаления уведомления
             .setContentTitle(title) // название
             .setContentText(text) // текст
+            .setAutoCancel(false)
             .setPriority(NotificationCompat.PRIORITY_HIGH) // приоритет
 
         //создаём уведомление

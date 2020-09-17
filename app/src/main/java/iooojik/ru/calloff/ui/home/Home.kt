@@ -6,7 +6,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.ContentResolver
 import android.content.Context
-import android.content.pm.PackageManager
+import android.content.SharedPreferences
 import android.database.Cursor
 import android.graphics.Color
 import android.os.Build
@@ -20,9 +20,6 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,7 +31,6 @@ import iooojik.ru.calloff.localData.AppDatabase
 import iooojik.ru.calloff.localData.callLog.CallLogDao
 import iooojik.ru.calloff.localData.callLog.CallLogModel
 import iooojik.ru.calloff.localData.whiteList.WhiteListModel
-import kotlinx.android.synthetic.main.fragment_home.*
 import java.lang.Exception
 import java.lang.Long
 import java.util.*
@@ -48,6 +44,7 @@ class Home : Fragment() {
     private lateinit var myContacts : MutableList<WhiteListModel>
     private lateinit var callLogDao: CallLogDao
     private lateinit var database : AppDatabase
+    private lateinit var preferences: SharedPreferences
 
 
     override fun onCreateView(
@@ -77,6 +74,7 @@ class Home : Fragment() {
         myContacts = getContactList()
         callLogs = getCallLogs()
         callLogs.reverse()
+        preferences = requireActivity().getSharedPreferences(StaticVars().preferencesName, Context.MODE_PRIVATE)
 
 
         requireActivity().runOnUiThread {
@@ -91,8 +89,9 @@ class Home : Fragment() {
         }
 
         //если версия SDK > O , то создаём канал для получения уведомлений
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel(StaticVars().NOTIFICATION_NAME.toString(), StaticVars().NOTIFICATION_NAME);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && preferences.getInt(StaticVars().notificationCreated, 0) == 0) {
+            createNotificationChannel(StaticVars().NOTIFICATION_NAME, StaticVars().NOTIFICATION_NAME)
+            preferences.edit().putInt(StaticVars().notificationCreated, 1).apply()
         }
     }
 

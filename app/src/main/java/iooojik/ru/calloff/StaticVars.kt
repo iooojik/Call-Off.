@@ -9,6 +9,7 @@ class StaticVars {
     val callsController = "CALLS CONTROLLER"
     val myContactsInWhiteList = "MY CONTACTS IN WHITE LIST STATE"
     val policyChecked = "USER CHECKED POLICY"
+    val notificationCreated = "NOTIFICATION CREATED"
     //код и название уведомлений
     val NOTIFICATION_NAME = "Напоминание"
     val NOTIFICATION_ID = 102
