@@ -82,7 +82,7 @@ class WhiteList : Fragment(), View.OnClickListener {
                     //если поля не пустые, то добавляем контакт в бд
                     if (nameField.text.toString().isNotEmpty() && phoneField.text.isNotEmpty()){
                         val model = WhiteListModel(null, nameField.text.toString(),
-                            phoneField.text.toString(), null.toString(), false)
+                            phoneField.text.toString(), false)
                         whiteListDao.insert(model)
                         whiteList.add(model)
                         adapter.notifyDataSetChanged()

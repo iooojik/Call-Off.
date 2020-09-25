@@ -31,9 +31,12 @@ class PhoneCallStateReceiver : BroadcastReceiver() {
             val whiteList = whiteListDao.getAll()
             var isReject = true
             for (model in whiteList){
-                if (model.firstPhoneNumber == phoneNumber || model.secondPhoneNumber == phoneNumber) {
-                    isReject = false
-                    break
+                val myCurrentContactList = model.phoneNumbers.split(StaticVars().regex)
+                for (num in myCurrentContactList){
+                    if (phoneNumber == num){
+                        isReject = false
+                        break
+                    }
                 }
             }
             if (isReject) {

@@ -6,10 +6,8 @@ import android.content.Intent
 import iooojik.ru.calloff.services.CallControlService
 
 class BootReceiver : BroadcastReceiver() {
-    //Receiver для автоматического старта сервиса после перезагрузки
-    override fun onReceive(context: Context?, intent: Intent?) {
-        val serviceIntent = Intent(context, CallControlService::class.java)
-        context!!.startService(serviceIntent)
+    override fun onReceive(p0: Context?, p1: Intent?) {
+        val intentService = Intent(p0, CallControlService::class.java)
+        p0!!.startService(intentService)
     }
-
 }

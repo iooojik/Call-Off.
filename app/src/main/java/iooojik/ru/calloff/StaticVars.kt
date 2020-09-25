@@ -25,4 +25,5 @@ class StaticVars {
         Manifest.permission.WRITE_CONTACTS)
     //стандратное уведомление об ошибках
     val TOAST_WARNING_MESSAGE = "Что-то пошло не так"
+    val regex = "***@iooojik@***"
 }

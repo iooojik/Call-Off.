@@ -1,5 +1,6 @@
 package iooojik.ru.calloff.ui.home
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -39,7 +40,6 @@ class CallLogAdapter(
     private lateinit var callLogDao: CallLogDao
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(inflater.inflate(R.layout.recycler_view_contact_item, parent, false))
     }
@@ -48,14 +48,15 @@ class CallLogAdapter(
         return callLogs.size
     }
 
+    @SuppressLint("InflateParams")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         database = AppDatabase.getAppDataBase(context)!!
         callLogDao = database.callLogDao()
         val model = callLogs[position]
 
-        holder.contactName.text = model.name.toString()
+        holder.contactName.text = model.name
         holder.contactPhoneNumber.text = model.firstPhoneNumber
-        holder.callDate.text = model.time.toString()
+        holder.callDate.text = model.time
 
         val cornerSize = activity.resources.getDimension(R.dimen.medium_components_dimen)
         val customButtonShapeBuilder = ShapeAppearanceModel.Builder()
@@ -71,9 +72,6 @@ class CallLogAdapter(
                 context,
                 R.color.chainItem
             )
-
-        holder.callButton.visibility = View.GONE
-
         holder.itemView.background = materialShapeDrawable
 
         holder.itemView.setOnClickListener {
@@ -86,7 +84,7 @@ class CallLogAdapter(
             contactName.text = model.name
 
             //добавляем номера телефона
-            if (model.firstPhoneNumber.toString() != "null"){
+            if (model.firstPhoneNumber != "null"){
                 val chip1 = Chip(context)
                 chip1.text = model.firstPhoneNumber
                 chip1.setOnClickListener {
@@ -109,7 +107,7 @@ class CallLogAdapter(
                 phonesGroup.addView(chip1)
             }
 
-            if (model.secondPhoneNumber.toString() != "null"){
+            if (model.secondPhoneNumber != "null"){
                 val chip2 = Chip(context)
                 chip2.text = model.secondPhoneNumber
                 chip2.setOnCheckedChangeListener { _, isChecked ->
@@ -137,6 +135,5 @@ class CallLogAdapter(
         val contactName : TextView = itemView.findViewById(R.id.contact_name)
         val contactPhoneNumber: TextView = itemView.findViewById(R.id.contact_phone_number)
         val callDate : TextView = itemView.findViewById(R.id.call_time)
-        val callButton : ImageView = itemView.findViewById(R.id.call_button)
     }
 }

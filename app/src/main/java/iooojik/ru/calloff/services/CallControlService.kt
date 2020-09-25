@@ -8,8 +8,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
 import android.telecom.InCallService
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -34,23 +36,20 @@ class CallControlService : InCallService() {
         sendNotification("Запущен фоновый процесс", "Номера из \"Белого списка\" могут вам звонить.")
         //какой-то процесс
         doTask()
-        return START_REDELIVER_INTENT
+        return START_STICKY
     }
 
     private fun doTask(){
         //что-то делаем
 
-        /*
         val mainHandler = Handler()
-        var i = 0
         mainHandler.post(object : Runnable {
             override fun run() {
-                Log.e("info", i++.toString())
-                mainHandler.postDelayed(this, 1000)
+                Log.i("CALL OFF. INFO", "SERVICE IS RUNNING")
+                sendNotification("Запущен фоновый процесс", "Номера из \"Белого списка\" могут вам звонить.")
+                mainHandler.postDelayed(this, 600000)
             }
         })
-
-         */
     }
 
     private fun sendNotification(title: String, text: String){
@@ -109,11 +108,11 @@ class CallControlService : InCallService() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+        //super.onDestroy()
         //удаляем напоминание при завершении работы сервиса
-        notificationManager.cancel(StaticVars().NOTIFICATION_ID)
+        //notificationManager.cancel(StaticVars().NOTIFICATION_ID)
         //останавливаем сервис
-        stopSelf()
+        //stopSelf()
     }
 
 }

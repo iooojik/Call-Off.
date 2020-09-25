@@ -11,10 +11,8 @@ class WhiteListModel(
     val id : Long? = null,
     @ColumnInfo(name = "name")
     var name : String,
-    @ColumnInfo(name = "first_phone_number")
-    var firstPhoneNumber : String,
-    @ColumnInfo(name = "second_phone_number")
-    var secondPhoneNumber : String,
+    @ColumnInfo(name = "phone_numbers")
+    var phoneNumbers : String,
     @ColumnInfo(name = "is_my_contact")
     var isMyContact : Boolean? = false
 ) {

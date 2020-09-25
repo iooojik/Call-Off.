@@ -5,6 +5,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
@@ -24,6 +25,7 @@ import iooojik.ru.calloff.StaticVars
 import iooojik.ru.calloff.localData.AppDatabase
 import iooojik.ru.calloff.localData.whiteList.WhiteListDao
 import iooojik.ru.calloff.localData.whiteList.WhiteListModel
+import java.lang.StringBuilder
 
 class Settings : Fragment(), View.OnClickListener {
     private lateinit var rootView: View
@@ -61,20 +63,20 @@ class Settings : Fragment(), View.OnClickListener {
         if (preferences.getInt(StaticVars().callsController, 0) == 1)
             callsController.isChecked = true
         //слушатель на изменение состояния переключателя
-        callsController.setOnCheckedChangeListener{buttonView, isChecked ->
+        callsController.setOnCheckedChangeListener{ _, isChecked ->
             val callControlService = CallControlService::class.java
             val intent = Intent(requireContext(), callControlService)
 
             if (isChecked) {
-                requireActivity().startService(intent)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    requireActivity().startForegroundService(intent)
+                }else requireActivity().startService(intent)
                 preferences.edit().putInt(StaticVars().callsController, 1).apply()
                 Snackbar.make(requireView(), "Включено", Snackbar.LENGTH_SHORT).show()
 
             }
             else {
-                if (isServiceRunning(callControlService)){
-                    requireActivity().stopService(intent)
-                }
+                requireActivity().stopService(intent)
                 preferences.edit().putInt(StaticVars().callsController, 0).apply()
                 Snackbar.make(requireView(), "Выключено", Snackbar.LENGTH_SHORT).show()
 
@@ -141,8 +143,9 @@ class Settings : Fragment(), View.OnClickListener {
                         arrayOf(id),
                         null
                     )
-                    var index = 1
-                    val model = WhiteListModel(null, null.toString(), null.toString(), null.toString(), true)
+                    val model = WhiteListModel(null, null.toString(), null.toString(), true)
+                    val phonesStringLine = StringBuilder()
+                    val currentUserPhones = mutableListOf<String>()
                     while(pCur!!.moveToNext()) {
                         var phoneNo = pCur.getString(
                             pCur.getColumnIndex(
@@ -153,15 +156,20 @@ class Settings : Fragment(), View.OnClickListener {
                         phoneNo = phoneNo.replace("-", "", false)
                         Log.i("TAG", "Name: $name")
                         Log.i("TAG", "Phone Number: $phoneNo")
+                        var isExist = false
+                        for (phone in currentUserPhones){
+                            if (phoneNo == phone)
+                                isExist = true
+                        }
+                        if (!isExist) {
+                            currentUserPhones.add(phoneNo)
+                            phonesStringLine.append(phoneNo).append(StaticVars().regex)
+                        }
                         if (name != null)
                             model.name = name
-
-                        if (index == 1 && phoneNo.toCharArray()[0] == '+')
-                            model.firstPhoneNumber = phoneNo
-                        else if(phoneNo.toCharArray()[0] == '+' && model.firstPhoneNumber != phoneNo)
-                            model.secondPhoneNumber = phoneNo
-                        index++
                     }
+                    model.phoneNumbers = phonesStringLine.toString()
+                    Log.e("$name numbers", phonesStringLine.toString())
                     models.add(model)
                     pCur.close()
                 }
@@ -170,6 +178,7 @@ class Settings : Fragment(), View.OnClickListener {
         cur?.close()
         return models
     }
+
 
     private fun isServiceRunning(serviceClass: Class<*>): Boolean {
         val activityManager = requireActivity().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager

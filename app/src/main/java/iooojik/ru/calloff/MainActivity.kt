@@ -52,15 +52,6 @@ class MainActivity : AppCompatActivity() {
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.show()
 
-        val cornerSize = resources.getDimension(R.dimen.large_components_dimen)
-        val customButtonShapeBuilder = ShapeAppearanceModel.Builder()
-        customButtonShapeBuilder.setTopLeftCorner(CornerFamily.CUT, cornerSize)
-        customButtonShapeBuilder.setTopRightCorner(CornerFamily.CUT, cornerSize)
-        val materialShapeDrawable = MaterialShapeDrawable(customButtonShapeBuilder.build())
-        materialShapeDrawable.fillColor = ContextCompat.getColorStateList(applicationContext, R.color.colorAccent)
-
-        bottomNavigationView.background = materialShapeDrawable
-
         //переходим на начальную страницу
         if (preferences.getInt(StaticVars().policyChecked, 0) == 1)
             findNavController(R.id.nav_host_fragment).navigate(R.id.nav_home)

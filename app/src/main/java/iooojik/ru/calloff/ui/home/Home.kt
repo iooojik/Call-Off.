@@ -33,6 +33,7 @@ import iooojik.ru.calloff.localData.callLog.CallLogModel
 import iooojik.ru.calloff.localData.whiteList.WhiteListModel
 import java.lang.Exception
 import java.lang.Long
+import java.lang.StringBuilder
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -110,6 +111,7 @@ class Home : Fragment() {
         val date: Int = managedCursor.getColumnIndex(CallLog.Calls.DATE)
 
         val duration: Int = managedCursor.getColumnIndex(CallLog.Calls.DURATION)
+
         while (managedCursor.moveToNext()) {
             val phNumber: String = managedCursor.getString(number)
             val callType: String = managedCursor.getString(type)
@@ -117,8 +119,7 @@ class Home : Fragment() {
             val callDayTime = Date(Long.valueOf(callDate))
             val callDuration: String = managedCursor.getString(duration)
             var dir: String? = null
-            val dircode = callType.toInt()
-            when (dircode) {
+            when (callType.toInt()) {
                 CallLog.Calls.OUTGOING_TYPE -> dir = "OUTGOING"
                 CallLog.Calls.INCOMING_TYPE -> dir = "INCOMING"
                 CallLog.Calls.MISSED_TYPE -> dir = "MISSED"
@@ -134,19 +135,17 @@ class Home : Fragment() {
                 """
             )
             val model = CallLogModel(null, getString(R.string.unknown_caller),
-                phNumber.toString(),null.toString(),false, callDayTime.toString(), dir.toString())
-
+                phNumber, null.toString(),false, callDayTime.toString(), dir.toString())
             for (md in myContacts){
-                if (phNumber == md.firstPhoneNumber || phNumber == md.secondPhoneNumber){
-                    model.firstPhoneNumber = md.firstPhoneNumber
-                    if (md.secondPhoneNumber != "null" && md.secondPhoneNumber != md.firstPhoneNumber)
-                        model.secondPhoneNumber = md.secondPhoneNumber
-                    model.name = md.name
-                    model.isMyContact = true
-                    break
+                val myCurrentContactList = md.phoneNumbers.split(StaticVars().regex)
+                for (num in myCurrentContactList){
+                        if (phNumber == num){
+                            model.name = md.name
+                            model.isMyContact = true
+                            break
+                    }
                 }
             }
-
             models.add(model)
         }
         if (models.size != callLogDao.getAll().size){
@@ -206,8 +205,9 @@ class Home : Fragment() {
                         arrayOf(id),
                         null
                     )
-                    var index = 1
-                    val model = WhiteListModel(null, null.toString(), null.toString(), null.toString(), true)
+                    val model = WhiteListModel(null, null.toString(), null.toString(), true)
+                    val phonesStringLine = StringBuilder()
+                    val currentUserPhones = mutableListOf<String>()
                     while(pCur!!.moveToNext()) {
                         var phoneNo = pCur.getString(
                             pCur.getColumnIndex(
@@ -218,15 +218,20 @@ class Home : Fragment() {
                         phoneNo = phoneNo.replace("-", "", false)
                         Log.i("TAG", "Name: $name")
                         Log.i("TAG", "Phone Number: $phoneNo")
+                        var isExist = false
+                        for (phone in currentUserPhones){
+                            if (phoneNo == phone)
+                                isExist = true
+                        }
+                        if (!isExist) {
+                            currentUserPhones.add(phoneNo)
+                            phonesStringLine.append(phoneNo).append(StaticVars().regex)
+                        }
                         if (name != null)
                             model.name = name
-
-                        if (index == 1)
-                            model.firstPhoneNumber = phoneNo
-                        else if(index == 2)
-                            model.secondPhoneNumber = phoneNo
-                        index++
                     }
+                    model.phoneNumbers = phonesStringLine.toString()
+                    Log.e("$name numbers", phonesStringLine.toString())
                     models.add(model)
                     pCur.close()
                 }

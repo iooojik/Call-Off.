@@ -16,13 +16,19 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import iooojik.ru.calloff.R
+import iooojik.ru.calloff.StaticVars
 import iooojik.ru.calloff.localData.AppDatabase
+import iooojik.ru.calloff.localData.callLog.CallLogModel
 import iooojik.ru.calloff.localData.whiteList.WhiteListDao
 import iooojik.ru.calloff.localData.whiteList.WhiteListModel
+import java.lang.StringBuilder
 
 class WhiteListAdapter(private val context: Context, private val inflater: LayoutInflater,
                        private var whiteList: MutableList<WhiteListModel>,
@@ -47,32 +53,61 @@ class WhiteListAdapter(private val context: Context, private val inflater: Layou
 
         val model = whiteList[position]
         holder.contactName.text = model.name.toString()
-        holder.contactPhoneNumber.text = model.firstPhoneNumber.toString()
-        holder.callDate.visibility = View.GONE
 
-        if (model.secondPhoneNumber != "null")
-            holder.contactPhoneNumber.text = "${model.firstPhoneNumber}\n${model.secondPhoneNumber}"
+        holder.contactPhoneNumber.text = getNumbers(model.phoneNumbers)
+        holder.callDate.visibility = View.GONE
 
         val cornerSize = activity.resources.getDimension(R.dimen.medium_components_dimen)
         val customButtonShapeBuilder = ShapeAppearanceModel.Builder()
         customButtonShapeBuilder.setAllCorners(CornerFamily.CUT, cornerSize)
         val materialShapeDrawable = MaterialShapeDrawable(customButtonShapeBuilder.build())
 
-        if (model.firstPhoneNumber == "null" && model.secondPhoneNumber == "null"){
-            materialShapeDrawable.fillColor = ContextCompat.getColorStateList(
-                context,
-                R.color.colorWarning
-            )
-        } else {
-            materialShapeDrawable.fillColor = ContextCompat.getColorStateList(
-                context,
-                R.color.chainItem
-            )
-        }
+        materialShapeDrawable.fillColor = ContextCompat.getColorStateList(
+            context,
+            R.color.chainItem
+        )
 
-        holder.callButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_CALL, Uri.parse("tel:" + model.firstPhoneNumber))
-            activity.startActivity(intent)
+        holder.itemView.setOnClickListener {
+            val bottomSheetDialog = BottomSheetDialog(context)
+            val bottomView : View = inflater.inflate(R.layout.bottom_sheet_contact_info, null)
+            val contactName = bottomView.findViewById<TextView>(R.id.contact_name)
+            val phonesGroup = bottomView.findViewById<ChipGroup>(R.id.phones_chip_group)
+            val recViewCallLog = bottomView.findViewById<RecyclerView>(R.id.rec_view_call_log)
+
+            contactName.text = model.name
+            val numbers = model.phoneNumbers.split(StaticVars().regex)
+            for (num in numbers) {
+                if (!num.isNullOrBlank()) {
+                    //добавляем номера телефона
+                    val chip = Chip(context)
+                    chip.text = num
+                    chip.setOnClickListener {
+                        MaterialAlertDialogBuilder(
+                            context,
+                            R.style.ThemeOverlay_App_MaterialAlertDialog
+                        )
+                            .setTitle("Позвонить абоненту ${model.name}, используя телефон $num?")
+                            .setPositiveButton("Да") { dialog, _ ->
+                                val intent = Intent(Intent.ACTION_CALL, Uri.parse("tel:$num"))
+                                activity.startActivity(intent)
+                                dialog.cancel()
+                            }
+                            .setNegativeButton("Нет") { dialog, _ ->
+                                dialog.cancel()
+                            }
+                            .show()
+
+                    }
+                    phonesGroup.addView(chip)
+                }
+
+                //var callLogs = mutableListOf<CallLogModel>()
+                //callLogs = callLogDao.findByFirstPhoneNum(model.firstPhoneNumber) as MutableList<CallLogModel>
+
+
+                bottomSheetDialog.setContentView(bottomView)
+                bottomSheetDialog.show()
+            }
         }
 
         holder.itemView.background = materialShapeDrawable
@@ -103,10 +138,17 @@ class WhiteListAdapter(private val context: Context, private val inflater: Layou
 
     }
 
+    private fun getNumbers(nums : String): String {
+        val builder = StringBuilder()
+        val numsList = nums.split(StaticVars().regex)
+        for (n in numsList)
+            builder.append("$n      ")
+        return builder.toString()
+    }
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val contactName : TextView = itemView.findViewById(R.id.contact_name)
         val contactPhoneNumber: TextView = itemView.findViewById(R.id.contact_phone_number)
         val callDate : TextView = itemView.findViewById(R.id.call_time)
-        val callButton : ImageView = itemView.findViewById(R.id.call_button)
     }
 }
