@@ -55,6 +55,7 @@ class WhiteList : Fragment(), View.OnClickListener {
         val warningText = rootView.findViewById<TextView>(R.id.textWarning)
         if (whiteList.size > 0) {
             warningText.visibility = View.GONE
+            whiteList.sortBy { it.name }
             val recView = rootView.findViewById<RecyclerView>(R.id.rec_view_white_list)
             recView.layoutManager = LinearLayoutManager(context)
             adapter = WhiteListAdapter(

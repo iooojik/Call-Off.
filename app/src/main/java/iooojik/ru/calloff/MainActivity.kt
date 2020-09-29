@@ -3,7 +3,9 @@ package iooojik.ru.calloff
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -53,8 +55,26 @@ class MainActivity : AppCompatActivity() {
         fab.show()
 
         //переходим на начальную страницу
-        if (preferences.getInt(StaticVars().policyChecked, 0) == 1)
-            findNavController(R.id.nav_host_fragment).navigate(R.id.nav_home)
+        if (preferences.getInt(StaticVars().policyChecked, 0) == 1) {
+            //проверяем наличие разрешений
+            val perms: Array<String> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+                StaticVars().permsAPI28
+            else StaticVars().permsAPI23
+            var permissionStatus = PackageManager.PERMISSION_GRANTED
+            for (perm in perms) {
+                if (ContextCompat.checkSelfPermission(applicationContext, perm) == PackageManager.PERMISSION_DENIED) {
+                    permissionStatus = PackageManager.PERMISSION_DENIED
+                    break
+                }
+            }
+
+            if (permissionStatus == PackageManager.PERMISSION_DENIED){
+                findViewById<FloatingActionButton>(R.id.fab).hide()
+                bottomNavigationView.visibility = View.GONE
+                preferences.edit().putInt(StaticVars().policyChecked, 0).apply()
+                findNavController(R.id.nav_host_fragment).navigate(R.id.nav_home)
+            }
+        }
         else {
             findViewById<FloatingActionButton>(R.id.fab).hide()
             bottomNavigationView.visibility = View.GONE

@@ -9,5 +9,5 @@
     <dimen name="medium_components_dimen">10dp</dimen>
     <dimen name="large_components_dimen">24dp</dimen>
     <dimen name="round_buttons_icons">36dp</dimen>
-    <dimen name="bottom_navigation">57dp</dimen>
+    <dimen name="bottom_navigation">55dp</dimen>
 </resources>

@@ -11,5 +11,8 @@
 
     <style name="Widget.MaterialComponents.Snackbar" parent="">
         <item name="android:layout_marginBottom">@dimen/bottom_navigation</item>
+        <item name="android:layout_marginStart">@dimen/small_components_dimen</item>
+        <item name="android:layout_marginEnd">@dimen/small_components_dimen</item>
+
     </style>
 </resources>

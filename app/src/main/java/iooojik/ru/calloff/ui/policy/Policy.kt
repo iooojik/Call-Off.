@@ -3,9 +3,9 @@ package iooojik.ru.calloff.ui.policy
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.text.Html
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,10 +14,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import iooojik.ru.calloff.R
 import iooojik.ru.calloff.StaticVars
+
 
 class Policy : Fragment(), View.OnClickListener {
 
@@ -31,7 +33,10 @@ class Policy : Fragment(), View.OnClickListener {
     ): View? {
         rootView = inflater.inflate(R.layout.fragment_policy, container, false)
         //получаем настройки
-        preferences = requireActivity().getSharedPreferences(StaticVars().preferencesName, Context.MODE_PRIVATE)
+        preferences = requireActivity().getSharedPreferences(
+            StaticVars().preferencesName,
+            Context.MODE_PRIVATE
+        )
         //инициализируем элементы на фрагементе
         initialize()
         return rootView
@@ -59,13 +64,21 @@ class Policy : Fragment(), View.OnClickListener {
         when(v!!.id){
             R.id.cancel_policy -> {
                 preferences.edit().putInt(StaticVars().policyChecked, 0).apply()
-                Toast.makeText(requireContext(), "К сожалению, вы не сможете пользоваться приложением, " +
-                        "пока не примете Условия пользовательского соглашения и Правила использования.", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    requireContext(),
+                    "К сожалению, вы не сможете пользоваться приложением, " +
+                            "пока не примете Условия пользовательского соглашения и Правила использования.",
+                    Toast.LENGTH_LONG
+                ).show()
             }
             R.id.accept_policy -> {
-                if (!requestPermissions()){
-                    Snackbar.make(requireView(), "Пожалуйста, нажмите \"Принять\" ещё раз, чтобы продолжить.", Snackbar.LENGTH_LONG).show()
-                } else{
+                if (!requestPermissions()) {
+                    Snackbar.make(
+                        requireView(),
+                        "Пожалуйста, нажмите \"Принять\" ещё раз, чтобы продолжить.",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                } else {
                     preferences.edit().putInt(StaticVars().policyChecked, 1).apply()
                     requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.nav_home)
                 }
@@ -78,13 +91,15 @@ class Policy : Fragment(), View.OnClickListener {
 
     private fun requestPermissions() : Boolean{
         //проверяем наличие разрешений
+        val perms: Array<String> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+            StaticVars().permsAPI28
+        else StaticVars().permsAPI23
 
-        val perms = StaticVars().perms
+
         var permissionStatus = PackageManager.PERMISSION_GRANTED
 
         for (perm in perms) {
-            if (ContextCompat.checkSelfPermission(
-                    requireContext(), perm) == PackageManager.PERMISSION_DENIED) {
+            if (ContextCompat.checkSelfPermission(requireContext(), perm) == PackageManager.PERMISSION_DENIED) {
                 permissionStatus = PackageManager.PERMISSION_DENIED
                 break
             }
@@ -95,7 +110,6 @@ class Policy : Fragment(), View.OnClickListener {
             ActivityCompat.requestPermissions(requireActivity(), perms, 1)
 
         return permissionStatus == PackageManager.PERMISSION_GRANTED
-
     }
 
 }

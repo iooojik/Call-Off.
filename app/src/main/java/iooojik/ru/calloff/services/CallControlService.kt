@@ -1,5 +1,6 @@
 package iooojik.ru.calloff.services
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -10,6 +11,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
+import android.os.PowerManager
 import android.telecom.InCallService
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -23,15 +25,20 @@ import iooojik.ru.calloff.StaticVars
 class CallControlService : InCallService() {
 
     private lateinit var notificationManager: NotificationManager
+    private lateinit var powerManager: PowerManager
+    private lateinit var wakeLock: PowerManager.WakeLock
 
     override fun onCreate() {
         super.onCreate()
         //получаем notificationManager для отображения уведомления
         notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        powerManager = getSystemService(POWER_SERVICE) as PowerManager
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Call Off.:tag")
     }
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        wakeLock.acquire(10*60*1000L /*10 minutes*/)
         //показываем уведомление о работе приложения в фоновом процессе
         sendNotification("Запущен фоновый процесс", "Номера из \"Белого списка\" могут вам звонить.")
         //какой-то процесс
@@ -108,9 +115,10 @@ class CallControlService : InCallService() {
     }
 
     override fun onDestroy() {
-        //super.onDestroy()
+        super.onDestroy()
+        wakeLock.release()
         //удаляем напоминание при завершении работы сервиса
-        //notificationManager.cancel(StaticVars().NOTIFICATION_ID)
+        notificationManager.cancel(StaticVars().NOTIFICATION_ID)
         //останавливаем сервис
         //stopSelf()
     }

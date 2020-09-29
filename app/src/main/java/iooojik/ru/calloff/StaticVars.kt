@@ -1,6 +1,8 @@
 package iooojik.ru.calloff
 
 import android.Manifest
+import android.os.Build
+import androidx.annotation.RequiresApi
 
 class StaticVars {
     //название настроек
@@ -19,10 +21,17 @@ class StaticVars {
          * 2. доступ к списку вызовов
          * 3. доступ к списку контактов(и управление контактами)
          */
-    val perms = arrayOf(
+        @RequiresApi(Build.VERSION_CODES.P)
+        val permsAPI28 = arrayOf(
         Manifest.permission.READ_PHONE_STATE, Manifest.permission.CALL_PHONE,
         Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS,
-        Manifest.permission.WRITE_CONTACTS)
+        Manifest.permission.WRITE_CONTACTS, Manifest.permission.WAKE_LOCK,
+            Manifest.permission.FOREGROUND_SERVICE)
+
+        val permsAPI23 = arrayOf(
+        Manifest.permission.READ_PHONE_STATE, Manifest.permission.CALL_PHONE,
+        Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS,
+        Manifest.permission.WRITE_CONTACTS, Manifest.permission.WAKE_LOCK)
     //стандратное уведомление об ошибках
     val TOAST_WARNING_MESSAGE = "Что-то пошло не так"
     val regex = "***@iooojik@***"

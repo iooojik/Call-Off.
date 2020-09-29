@@ -7,6 +7,7 @@ import android.app.NotificationManager
 import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Color
 import android.os.Build
@@ -20,7 +21,11 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -71,11 +76,16 @@ class Home : Fragment() {
     }
 
     private fun initialize(){
+        preferences = requireActivity().getSharedPreferences(StaticVars().preferencesName, Context.MODE_PRIVATE)
+
+        if (!requestPermissions()) {
+            preferences.edit().putInt(StaticVars().policyChecked, 0).apply()
+            requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.nav_policy)
+        }
         inflater = requireActivity().layoutInflater
         myContacts = getContactList()
         callLogs = getCallLogs()
         callLogs.reverse()
-        preferences = requireActivity().getSharedPreferences(StaticVars().preferencesName, Context.MODE_PRIVATE)
 
 
         requireActivity().runOnUiThread {
@@ -160,6 +170,30 @@ class Home : Fragment() {
                 pgBar.visibility = View.GONE
         }
         return models
+    }
+
+    private fun requestPermissions() : Boolean{
+        //проверяем наличие разрешений
+        val perms: Array<String> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+            StaticVars().permsAPI28
+        else StaticVars().permsAPI23
+
+        var permissionStatus = PackageManager.PERMISSION_GRANTED
+
+        for (perm in perms) {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(), perm
+                ) == PackageManager.PERMISSION_DENIED) {
+                permissionStatus = PackageManager.PERMISSION_DENIED
+                break
+            }
+        }
+
+        //ещё раз проверяем наличие разрешений
+        if (permissionStatus != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(requireActivity(), perms, 1)
+
+        return permissionStatus == PackageManager.PERMISSION_GRANTED
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
