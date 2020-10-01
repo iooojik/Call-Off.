@@ -80,7 +80,7 @@ class Policy : Fragment(), View.OnClickListener {
                     ).show()
                 } else {
                     preferences.edit().putInt(StaticVars().policyChecked, 1).apply()
-                    requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.nav_home)
+                    requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.nav_white_list)
                 }
                 val acceptPolicy = rootView.findViewById<Button>(R.id.accept_policy)
                 if (!fromSettings)

@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         //views
         val drawer : DrawerLayout = findViewById(R.id.drawer)
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-        AppBarConfiguration.Builder(R.id.nav_home).setDrawerLayout(drawer).build()
+        AppBarConfiguration.Builder(R.id.nav_white_list).setDrawerLayout(drawer).build()
         NavigationUI.setupWithNavController(bottomNavigationView, navController)
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                 findViewById<FloatingActionButton>(R.id.fab).hide()
                 bottomNavigationView.visibility = View.GONE
                 preferences.edit().putInt(StaticVars().policyChecked, 0).apply()
-                findNavController(R.id.nav_host_fragment).navigate(R.id.nav_home)
+                findNavController(R.id.nav_host_fragment).navigate(R.id.nav_white_list)
             }
         }
         else {
