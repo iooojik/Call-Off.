@@ -72,7 +72,6 @@ class WhiteListAdapter(private val context: Context, private val inflater: Layou
             val bottomView : View = inflater.inflate(R.layout.bottom_sheet_contact_info, null)
             val contactName = bottomView.findViewById<TextView>(R.id.contact_name)
             val phonesGroup = bottomView.findViewById<ChipGroup>(R.id.phones_chip_group)
-            val recViewCallLog = bottomView.findViewById<RecyclerView>(R.id.rec_view_call_log)
 
             contactName.text = model.name
             val numbers = model.phoneNumbers.split(StaticVars().regex)
