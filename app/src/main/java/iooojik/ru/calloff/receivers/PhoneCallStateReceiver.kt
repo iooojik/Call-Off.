@@ -5,10 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.telephony.TelephonyManager
+import android.util.Log
 import com.android.internal.telephony.ITelephony
 import iooojik.ru.calloff.StaticVars
 import iooojik.ru.calloff.localData.AppDatabase
 import iooojik.ru.calloff.localData.whiteList.WhiteListDao
+import iooojik.ru.calloff.services.CallControlService
 
 
 class PhoneCallStateReceiver : BroadcastReceiver() {
@@ -39,7 +41,7 @@ class PhoneCallStateReceiver : BroadcastReceiver() {
                     }
                 }
             }
-            if (isReject) {
+            if (isReject && intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                 //отклоняем входящие вызовы
                 //получаем mTelephonyManager и telephonyService для управления звонком
                 mTelephonyManager =
@@ -54,6 +56,8 @@ class PhoneCallStateReceiver : BroadcastReceiver() {
                     telephonyService.silenceRinger()
                     telephonyService.endCall()
                 }
+                val intentService = Intent(context, CallControlService::class.java)
+                context.startService(intentService)
             }else return
         } else return
     }

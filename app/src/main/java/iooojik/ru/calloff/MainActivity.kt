@@ -1,10 +1,12 @@
 package iooojik.ru.calloff
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.telecom.Call
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
+import iooojik.ru.calloff.services.CallControlService
 
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -53,6 +56,13 @@ class MainActivity : AppCompatActivity() {
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.show()
+
+        if (preferences.getInt(StaticVars().callsController, 0) == 1){
+            val intent = Intent(applicationContext, CallControlService().javaClass)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(intent)
+            }else startService(intent)
+        }
 
         //переходим на начальную страницу
         if (preferences.getInt(StaticVars().policyChecked, 0) == 1) {
