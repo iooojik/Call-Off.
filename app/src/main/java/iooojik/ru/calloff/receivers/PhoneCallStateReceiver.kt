@@ -1,9 +1,6 @@
 package iooojik.ru.calloff.receivers
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.telephony.TelephonyManager
 import android.util.Log
 import com.android.internal.telephony.ITelephony
@@ -18,6 +15,8 @@ class PhoneCallStateReceiver : BroadcastReceiver() {
     private lateinit var preferences: SharedPreferences
     private lateinit var database: AppDatabase
     private lateinit var whiteListDao: WhiteListDao
+
+
 
     override fun onReceive(context: Context?, intent: Intent?) {
         //проверяем должны ли мы отклонять вызов
@@ -58,8 +57,11 @@ class PhoneCallStateReceiver : BroadcastReceiver() {
                 }
                 val intentService = Intent(context, CallControlService::class.java)
                 context.startService(intentService)
-            }else return
-        } else return
+            }
+        }
+
     }
+
+
 
 }

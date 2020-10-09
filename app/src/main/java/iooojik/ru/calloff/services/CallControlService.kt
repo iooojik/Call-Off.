@@ -1,19 +1,13 @@
 package iooojik.ru.calloff.services
 
-import android.annotation.SuppressLint
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
-import android.os.Handler
 import android.os.IBinder
 import android.os.PowerManager
-import android.telecom.InCallService
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -22,33 +16,30 @@ import iooojik.ru.calloff.R
 import iooojik.ru.calloff.StaticVars
 
 
-class CallControlService : InCallService() {
+class CallControlService : Service() {
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var powerManager: PowerManager
-    private lateinit var wakeLock: PowerManager.WakeLock
+    //private lateinit var wakeLock: PowerManager.WakeLock
+    private lateinit var preferences: SharedPreferences
 
     override fun onCreate() {
         super.onCreate()
         //получаем notificationManager для отображения уведомления
         notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         powerManager = getSystemService(POWER_SERVICE) as PowerManager
-        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Call Off.:tag")
-    }
-
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        wakeLock.acquire(10*60*1000L /*10 minutes*/)
+        //wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Call Off.:tag")
+        preferences = getSharedPreferences(StaticVars().preferencesName, Context.MODE_PRIVATE)
+        //wakeLock.acquire()
         //показываем уведомление о работе приложения в фоновом процессе
         sendNotification("Запущен фоновый процесс", "Номера из \"Белого списка\" могут вам звонить.")
         //какой-то процесс
-        doTask()
-        return START_STICKY
+        //doTask()
     }
 
     private fun doTask(){
         //что-то делаем
-
+        /*
         val mainHandler = Handler()
         mainHandler.post(object : Runnable {
             override fun run() {
@@ -57,6 +48,12 @@ class CallControlService : InCallService() {
                 mainHandler.postDelayed(this, 600000)
             }
         })
+
+         */
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return START_STICKY
     }
 
     private fun sendNotification(title: String, text: String){
@@ -116,9 +113,10 @@ class CallControlService : InCallService() {
 
     override fun onDestroy() {
         super.onDestroy()
-        wakeLock.release()
+        //wakeLock.release()
         //удаляем напоминание при завершении работы сервиса
-        notificationManager.cancel(StaticVars().NOTIFICATION_ID)
+        //notificationManager.cancel(StaticVars().NOTIFICATION_ID)
+        //preferences.edit().putString(StaticVars().TIME_SERVICE_DIED, Calendar.getInstance().toString()).apply()
         //останавливаем сервис
         //stopSelf()
     }

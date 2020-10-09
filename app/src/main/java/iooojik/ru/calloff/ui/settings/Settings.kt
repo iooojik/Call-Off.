@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -69,8 +70,8 @@ class Settings : Fragment(), View.OnClickListener {
 
             if (isChecked) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    requireActivity().startForegroundService(intent)
-                }else requireActivity().startService(intent)
+                    ContextCompat.startForegroundService(requireContext(), intent)
+                }else ContextCompat.startForegroundService(requireContext(), intent)
                 preferences.edit().putInt(StaticVars().callsController, 1).apply()
                 Snackbar.make(requireView(), "Включено", Snackbar.LENGTH_SHORT).show()
 

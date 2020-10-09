@@ -2,6 +2,7 @@ package iooojik.ru.calloff
 
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
@@ -23,6 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
+import iooojik.ru.calloff.receivers.PhoneCallStateReceiver
 import iooojik.ru.calloff.services.CallControlService
 
 
@@ -43,6 +45,9 @@ class MainActivity : AppCompatActivity() {
         preferences = this.getSharedPreferences(StaticVars().preferencesName, Context.MODE_PRIVATE)
         //настраиваем навигацию
         navigationSetup()
+        val receiver = PhoneCallStateReceiver()
+        val intFilter = IntentFilter("iooojik.ru.calloff")
+        registerReceiver(receiver, intFilter)
     }
 
     private fun navigationSetup(){
@@ -60,8 +65,8 @@ class MainActivity : AppCompatActivity() {
         if (preferences.getInt(StaticVars().callsController, 0) == 1){
             val intent = Intent(applicationContext, CallControlService().javaClass)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(intent)
-            }else startService(intent)
+                ContextCompat.startForegroundService(this, intent)
+            }else ContextCompat.startForegroundService(this, intent)
         }
 
         //переходим на начальную страницу

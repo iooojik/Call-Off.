@@ -14,6 +14,7 @@ class StaticVars {
     val notificationCreated = "NOTIFICATION CREATED"
     //код и название уведомлений
     val NOTIFICATION_NAME = "Напоминание"
+    val TIME_SERVICE_DIED ="TIME SERVICED DIED"
     val NOTIFICATION_ID = 102
 
         /* список запрашиваемых разрешений
